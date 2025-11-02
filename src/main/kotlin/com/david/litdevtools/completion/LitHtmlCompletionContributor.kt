@@ -4,6 +4,7 @@ import com.david.litdevtools.psi.LitPsiUtil
 import com.david.litdevtools.index.LitTagResolver
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
@@ -11,16 +12,21 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.util.ProcessingContext
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
+import com.intellij.psi.xml.XmlTokenType
 import com.intellij.lang.javascript.psi.JSFile
 
 class LitHtmlCompletionContributor : CompletionContributor() {
   init {
-    // Attributes for a Lit tag
-    extend(CompletionType.BASIC, XmlPatterns.xmlAttribute().withParent(XmlPatterns.xmlTag()),
+    // Match when typing attribute names in XML/HTML tags
+    // This pattern matches tokens inside an XML tag that could be attribute names
+    extend(
+      CompletionType.BASIC,
+      PlatformPatterns.psiElement(XmlTokenType.XML_NAME).withParent(XmlPatterns.xmlAttribute()),
       object : CompletionProvider<CompletionParameters>() {
         override fun addCompletions(p: CompletionParameters, ctx: ProcessingContext, r: CompletionResultSet) {
           val attr = p.position.parent as? XmlAttribute ?: return
           val tag = attr.parent as? XmlTag ?: return
+          
           val klass = resolveTagToClass(tag) ?: return
           val comp = LitPsiUtil.tryBuildComponent(klass) ?: return
 

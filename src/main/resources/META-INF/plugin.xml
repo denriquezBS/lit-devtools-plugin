@@ -11,11 +11,19 @@
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Completion HTML -->
-    <completion.contributor language="HTML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+    <!-- Completion for HTML files -->
+    <completion.contributor language="XML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+    
+    <!-- Completion for TypeScript/JavaScript files (for html template literals) -->
+    <completion.contributor language="JavaScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+    <completion.contributor language="TypeScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
 
-    <!-- Navigation tag -> class -->
-    <psi.referenceContributor language="HTML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    <!-- Navigation tag -> class in HTML files -->
+    <psi.referenceContributor language="XML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    
+    <!-- Navigation tag -> class in TypeScript/JavaScript files (for html template literals) -->
+    <psi.referenceContributor language="JavaScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    <psi.referenceContributor language="TypeScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
 
     <!-- Structure view for JS/TS files -->
     <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
