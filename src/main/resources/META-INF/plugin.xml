@@ -29,8 +29,13 @@
     <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
     <lang.structureViewBuilder language="TypeScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
 
-    <!-- (Optional) Tool window
-    <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory"/>
-    -->
+    <!-- Startup activity to confirm plugin is loaded -->
+    <postStartupActivity implementation="com.david.litdevtools.LitStartupActivity"/>
+    
+    <!-- Notification group for plugin messages -->
+    <notificationGroup id="Lit DevTools" displayType="BALLOON"/>
+
+    <!-- Tool window for diagnostics and status -->
+    <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory" icon="AllIcons.Toolwindows.ToolWindowInspection"/>
   </extensions>
 </idea-plugin>

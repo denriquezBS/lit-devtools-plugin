@@ -3,9 +3,11 @@ package com.david.litdevtools.psi
 import com.intellij.lang.javascript.psi.*
 import com.intellij.lang.javascript.psi.ecma6.*
 import com.intellij.lang.javascript.psi.ecmal4.JSAttributeList
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.PsiElement
 
 object LitPsiUtil {
+  private val LOG = Logger.getInstance(LitPsiUtil::class.java)
   data class LitComponent(
     val tagName: String,
     val jsClass: TypeScriptClass,
@@ -88,7 +90,7 @@ object LitPsiUtil {
     if (!isLitElement(klass)) return null
     val tag = customElementTag(klass) ?: return null
     val (props, states, privs) = litMembers(klass)
-    return LitComponent(
+    val component = LitComponent(
       tagName = tag,
       jsClass = klass,
       properties = props,
@@ -98,5 +100,7 @@ object LitPsiUtil {
       events = events(klass),
       hasStyles = hasStyles(klass)
     )
+    LOG.info("Lit DevTools: Found component <${tag}> with ${props.size} properties, ${states.size} state fields, ${component.events.size} events")
+    return component
   }
 }
