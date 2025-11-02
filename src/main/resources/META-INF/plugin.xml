@@ -1,0 +1,27 @@
+<idea-plugin>
+  <id>com.david.lit-devtools</id>
+  <name>Lit DevTools</name>
+  <vendor email="you@example.com">David</vendor>
+  <version>0.1.0</version>
+
+  <description>Developer experience for Lit 2.x–3.x web components: completion, navigation, and structured view. Tested on WebStorm 2024.2 (build 242.*).</description>
+
+  <depends>com.intellij.modules.lang</depends>
+  <depends>JavaScript</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Completion HTML -->
+    <completion.contributor language="HTML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+
+    <!-- Navigation tag -> class -->
+    <psi.referenceContributor language="HTML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+
+    <!-- Structure view for JS/TS files -->
+    <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
+    <lang.structureViewBuilder language="TypeScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
+
+    <!-- (Optionnel) Tool window
+    <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory"/>
+    -->
+  </extensions>
+</idea-plugin>
