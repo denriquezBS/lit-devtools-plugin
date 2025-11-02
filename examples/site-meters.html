@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Meters - Testing Plugin Navigation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .metric {
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Site Meters Dashboard</h1>
+  
+  <p>This example demonstrates the Lit DevTools plugin functionality:</p>
+  <ul>
+    <li><strong>Navigation:</strong> Ctrl/Cmd-Click on custom element tags to jump to their TypeScript class definition</li>
+    <li><strong>Autocomplete:</strong> Start typing attributes to see suggestions from @property decorators</li>
+  </ul>
+  
+  <div class="metrics">
+    <div class="metric">
+      <h2>System Status</h2>
+      <p>Real-time monitoring metrics</p>
+    </div>
+    
+    <div class="metric">
+      <h2>Performance</h2>
+      <p>Application performance indicators</p>
+    </div>
+    
+    <div class="metric">
+      <h2>User Activity</h2>
+      <p>Current user sessions and activity</p>
+    </div>
+    
+    <div class="metric">
+      <h2>Data Throughput</h2>
+      <p>Network and data transfer metrics</p>
+    </div>
+    
+    <div class="metric">
+      <h2>Error Rates</h2>
+      <p>Application error tracking</p>
+    </div>
+    
+    <div class="metric">
+      <h2>Resource Usage</h2>
+      <p>CPU, memory, and storage utilization</p>
+    </div>
+    
+    <div class="metric">
+      <h2>Active Alerts</h2>
+      <p>Current status of system alerts</p>
+      <p>Monitor critical system events and warnings in real-time.</p>
+      <p>The alert icons component provides visual indicators for different alert levels:</p>
+      <ul>
+        <li>Error alerts (red)</li>
+        <li>Warning alerts (yellow/orange)</li>
+        <li>Info alerts (blue)</li>
+        <li>Success alerts (green)</li>
+      </ul>
+      <p>Each icon can be customized with different sizes and colors.</p>
+      <p>Below are examples of alert icons in use:</p>
+      
+      <!-- Testing plugin features - LINE 88:
+           1. Ctrl/Cmd-Click on "bse-oases-alerts-icons" should navigate to alerts-icons.ts
+           2. Autocomplete should suggest: icon, color, size attributes
+           3. These attributes come from @property decorators in alerts-icons.ts
+      -->
+      <bse-oases-alerts-icons 
+        icon="error"
+        color="orange"
+        size="32"
+      ></bse-oases-alerts-icons>
+      
+      <bse-oases-alerts-icons 
+        icon="warning"
+        color="yellow"
+        size="24"
+      ></bse-oases-alerts-icons>
+    </div>
+    
+    <div class="metric">
+      <h2>Example Component</h2>
+      <example-component 
+        name="Test"
+        count="10"
+      ></example-component>
+    </div>
+  </div>
+
+  <script type="module" src="./alerts-icons.js"></script>
+  <script type="module" src="./example-component.js"></script>
+</body>
+</html>
