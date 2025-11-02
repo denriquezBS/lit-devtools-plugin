@@ -4,6 +4,7 @@ import com.david.litdevtools.psi.LitPsiUtil
 import com.david.litdevtools.index.LitTagResolver
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiManager
@@ -16,7 +17,10 @@ import com.intellij.psi.xml.XmlTokenType
 import com.intellij.lang.javascript.psi.JSFile
 
 class LitHtmlCompletionContributor : CompletionContributor() {
+  private val LOG = Logger.getInstance(LitHtmlCompletionContributor::class.java)
+  
   init {
+    LOG.info("Lit DevTools: LitHtmlCompletionContributor initialized")
     // Match when typing attribute names in XML/HTML tags
     // This pattern matches tokens inside an XML tag that could be attribute names
     extend(
@@ -27,8 +31,15 @@ class LitHtmlCompletionContributor : CompletionContributor() {
           val attr = p.position.parent as? XmlAttribute ?: return
           val tag = attr.parent as? XmlTag ?: return
           
-          val klass = resolveTagToClass(tag) ?: return
+          LOG.info("Lit DevTools: Attempting completion for tag <${tag.name}>")
+          
+          val klass = resolveTagToClass(tag) ?: run {
+            LOG.info("Lit DevTools: No Lit component found for tag <${tag.name}>")
+            return
+          }
           val comp = LitPsiUtil.tryBuildComponent(klass) ?: return
+
+          LOG.info("Lit DevTools: Providing ${comp.properties.size} property completions and ${comp.events.size} event completions for <${tag.name}>")
 
           comp.properties.forEach { prop ->
             val le = LookupElementBuilder.create(prop.attrName ?: prop.name)

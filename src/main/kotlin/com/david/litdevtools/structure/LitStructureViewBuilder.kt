@@ -7,12 +7,20 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.lang.PsiStructureViewFactory
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.JSFile
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 
 class LitStructureViewBuilder : PsiStructureViewFactory {
+  private val LOG = Logger.getInstance(LitStructureViewBuilder::class.java)
+  
+  init {
+    LOG.info("Lit DevTools: LitStructureViewBuilder initialized")
+  }
+  
   override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder? {
     if (psiFile !is JSFile) return null
+    LOG.info("Lit DevTools: Creating structure view for ${psiFile.name}")
     return object : TreeBasedStructureViewBuilder() {
       override fun createStructureViewModel(editor: Editor?): StructureViewModel =
         object : com.intellij.ide.structureView.TextEditorBasedStructureViewModel(editor, psiFile) {

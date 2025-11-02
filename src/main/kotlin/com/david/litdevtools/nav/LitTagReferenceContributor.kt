@@ -1,6 +1,7 @@
 package com.david.litdevtools.nav
 
 import com.david.litdevtools.index.LitTagResolver
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
@@ -9,7 +10,14 @@ import com.intellij.xml.util.HtmlUtil
 import com.intellij.lang.javascript.psi.JSFile
 
 class LitTagReferenceContributor : PsiReferenceContributor() {
+  private val LOG = Logger.getInstance(LitTagReferenceContributor::class.java)
+  
+  init {
+    LOG.info("Lit DevTools: LitTagReferenceContributor initialized")
+  }
+  
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
+    LOG.info("Lit DevTools: Registering reference providers")
     registrar.registerReferenceProvider(
       XmlPatterns.xmlTag(),
       object : PsiReferenceProvider() {
@@ -18,6 +26,8 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
           if (!HtmlUtil.isHtmlTag(tag)) return PsiReference.EMPTY_ARRAY
           val project = tag.project
           val tagName = tag.name
+          
+          LOG.info("Lit DevTools: Looking up navigation reference for tag <${tagName}>")
           
           // Search across all JavaScript/TypeScript files in the project
           val scope = GlobalSearchScope.projectScope(project)
@@ -31,6 +41,12 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
               val components = LitTagResolver.findCandidates(psiFile)
               components[tagName]?.let { candidates.add(it) }
             }
+          }
+
+          if (candidates.isNotEmpty()) {
+            LOG.info("Lit DevTools: Found ${candidates.size} navigation target(s) for <${tagName}>")
+          } else {
+            LOG.info("Lit DevTools: No navigation target found for <${tagName}>")
           }
 
           return if (candidates.isNotEmpty()) arrayOf(object : PsiReferenceBase<com.intellij.psi.xml.XmlTag>(tag, true) {
