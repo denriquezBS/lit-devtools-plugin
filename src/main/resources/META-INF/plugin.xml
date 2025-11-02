@@ -34,9 +34,7 @@
     
     <!-- Notification group for plugin messages -->
     <notificationGroup id="Lit DevTools" displayType="BALLOON"/>
-  </extensions>
 
-  <extensions defaultExtensionNs="com.intellij">
     <!-- Tool window for diagnostics and status -->
     <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory" icon="AllIcons.Toolwindows.ToolWindowInspection"/>
   </extensions>

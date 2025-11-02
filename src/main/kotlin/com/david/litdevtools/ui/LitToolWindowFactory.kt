@@ -1,5 +1,6 @@
 package com.david.litdevtools.ui
 
+import com.david.litdevtools.LitConstants
 import com.david.litdevtools.index.LitTagResolver
 import com.david.litdevtools.psi.LitPsiUtil
 import com.intellij.lang.javascript.psi.JSFile
@@ -38,7 +39,7 @@ class LitInspectorPanel(private val project: Project) : JPanel(BorderLayout()) {
     refreshButton.addActionListener { refresh() }
     
     val topPanel = JPanel(BorderLayout())
-    topPanel.add(JLabel(" Lit DevTools Plugin Status"), BorderLayout.WEST)
+    topPanel.add(JLabel(" ${LitConstants.PLUGIN_NAME} Plugin Status"), BorderLayout.WEST)
     topPanel.add(refreshButton, BorderLayout.EAST)
     
     add(topPanel, BorderLayout.NORTH)
@@ -48,9 +49,9 @@ class LitInspectorPanel(private val project: Project) : JPanel(BorderLayout()) {
   }
   
   private fun refresh() {
-    LOG.info("Lit DevTools: Refreshing inspector panel")
+    LOG.info("${LitConstants.PLUGIN_NAME}: Refreshing inspector panel")
     val sb = StringBuilder()
-    sb.appendLine("=== Lit DevTools Plugin v0.1.0 ===")
+    sb.appendLine("=== ${LitConstants.PLUGIN_NAME} Plugin v${LitConstants.PLUGIN_VERSION} ===")
     sb.appendLine()
     sb.appendLine("Status: ACTIVE ✓")
     sb.appendLine("Project: ${project.name}")
@@ -111,9 +112,9 @@ class LitInspectorPanel(private val project: Project) : JPanel(BorderLayout()) {
     sb.appendLine("=== Logging ===")
     sb.appendLine("Check IDE log for detailed diagnostics:")
     sb.appendLine("Help → Show Log in Explorer/Finder")
-    sb.appendLine("Search for 'Lit DevTools' to see plugin activity")
+    sb.appendLine("Search for '${LitConstants.PLUGIN_NAME}' to see plugin activity")
     
     textArea.text = sb.toString()
-    LOG.info("Lit DevTools: Inspector panel refreshed")
+    LOG.info("${LitConstants.PLUGIN_NAME}: Inspector panel refreshed")
   }
 }
