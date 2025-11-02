@@ -31,6 +31,7 @@ class LitFileTreeElement(file: JSFile?) : PsiTreeElementBase<JSFile>(file) {
       jsFile.accept(object : com.intellij.lang.javascript.psi.JSRecursiveElementVisitor() {
         override fun visitTypeScriptClass(aClass: TypeScriptClass) {
           res += LitClassTreeElement(aClass)
+          super.visitTypeScriptClass(aClass)
         }
       })
     }
