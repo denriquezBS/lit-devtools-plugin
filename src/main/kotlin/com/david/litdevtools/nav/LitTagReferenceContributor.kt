@@ -12,25 +12,24 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
     registrar.registerReferenceProvider(
       XmlPatterns.xmlTag(),
       object : PsiReferenceProvider() {
-        override fun getReferencesByElement(element: PsiElement, ctx: ProcessingContext): Array<PsiReference> {
+        override fun getReferencesByElement(element: PsiElement, context: com.intellij.util.ProcessingContext): Array<PsiReference> {
           val tag = element as? com.intellij.psi.xml.XmlTag ?: return PsiReference.EMPTY_ARRAY
           if (!HtmlUtil.isHtmlTag(tag)) return PsiReference.EMPTY_ARRAY
           val project = tag.project
           // Simple search: traverse project JS/TS files to find the class decorated with @customElement(tag.name)
           val scope = GlobalSearchScope.projectScope(project)
-          val files = PsiShortNamesCache.getInstance(project).allFileNames
           // Heuristic: don't iterate everything; try local resolution (parent directory) first
           val candidates = mutableListOf<PsiElement>()
           val file = tag.containingFile
-          val jsFiles = PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.JSClass }
-          jsFiles.mapNotNull { it as? com.intellij.lang.javascript.psi.JSClass }
+          val jsFiles = PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
+          jsFiles.mapNotNull { it as? com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
             .mapNotNull { LitPsiUtil.tryBuildComponent(it) }
             .filter { it.tagName == tag.name }
             .mapTo(candidates) { it.jsClass }
 
           return if (candidates.isNotEmpty()) arrayOf(object : PsiReferenceBase<com.intellij.psi.xml.XmlTag>(tag, true) {
             override fun resolve(): PsiElement? = candidates.firstOrNull()
-            override fun getVariants(): Array<Any> = candidates.mapNotNull { (it as? com.intellij.lang.javascript.psi.JSClass)?.name }.toTypedArray()
+            override fun getVariants(): Array<Any> = candidates.mapNotNull { (it as? com.intellij.lang.javascript.psi.ecma6.TypeScriptClass)?.name }.toTypedArray()
           }) else PsiReference.EMPTY_ARRAY
         }
       }

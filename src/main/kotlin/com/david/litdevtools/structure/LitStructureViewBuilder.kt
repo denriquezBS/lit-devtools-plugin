@@ -4,16 +4,16 @@ import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.ide.structureView.StructureViewModel
 import com.intellij.ide.structureView.TreeBasedStructureViewBuilder
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
-import com.intellij.lang.javascript.psi.JSClass
+import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.JSFile
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 
 class LitStructureViewBuilder : TreeBasedStructureViewBuilder() {
   override fun createStructureViewModel(editor: Editor?): StructureViewModel =
-    object : com.intellij.ide.structureView.impl.common.TextEditorBasedStructureViewModel(editor, editor?.psiFile) {
+    object : com.intellij.ide.structureView.TextEditorBasedStructureViewModel(editor, editor?.psiFile) {
       override fun getRoot() = LitFileTreeElement(editor?.psiFile as? JSFile)
-      override fun isAlwaysShowsPlus() = true
+      override fun isAlwaysShowsPlus(element: com.intellij.ide.structureView.StructureViewTreeElement) = true
       override fun isAlwaysLeaf(element: com.intellij.ide.structureView.StructureViewTreeElement) = false
     }
 }
@@ -27,7 +27,7 @@ class LitFileTreeElement(file: JSFile?) : PsiTreeElementBase<JSFile>(file) {
   }
 }
 
-class LitClassTreeElement(private val klass: JSClass) : PsiTreeElementBase<JSClass>(klass) {
+class LitClassTreeElement(private val klass: TypeScriptClass) : PsiTreeElementBase<TypeScriptClass>(klass) {
   override fun getPresentableText(): String = klass.name ?: "(anonymous)"
   override fun getChildrenBase(): MutableCollection<com.intellij.ide.structureView.StructureViewTreeElement> =
     LitStructureElements.childrenFor(klass)

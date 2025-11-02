@@ -3,13 +3,13 @@ package com.david.litdevtools.structure
 import com.david.litdevtools.psi.LitPsiUtil
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
-import com.intellij.lang.javascript.psi.JSClass
+import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.JSField
 import com.intellij.lang.javascript.psi.JSFunction
 import com.intellij.psi.PsiElement
 
 object LitStructureElements {
-  fun childrenFor(klass: JSClass): MutableCollection<StructureViewTreeElement> {
+  fun childrenFor(klass: TypeScriptClass): MutableCollection<StructureViewTreeElement> {
     val comp = LitPsiUtil.tryBuildComponent(klass) ?: return mutableListOf()
     val out = mutableListOf<StructureViewTreeElement>()
 
@@ -42,7 +42,6 @@ object LitStructureElements {
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
     override fun canNavigateToSource(): Boolean = false
-    override fun getAlphaSortKey(): String = title
     override fun getPresentation() = com.intellij.navigation.ItemPresentationProviders.getItemPresentation(this)
     override fun getChildren(): Array<StructureViewTreeElement> = children.toTypedArray()
   }
@@ -62,7 +61,6 @@ object LitStructureElements {
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
     override fun canNavigateToSource(): Boolean = false
-    override fun getAlphaSortKey(): String = label
     override fun getPresentation() = com.intellij.navigation.ItemPresentationProviders.getItemPresentation(this)
     override fun getChildren(): Array<StructureViewTreeElement> = emptyArray()
   }
