@@ -2,6 +2,20 @@
 
 This document provides a technical overview of the Lit DevTools Plugin implementation.
 
+## Recent Fix (2025-11-02)
+
+### Issue
+The plugin was not activating - navigation and autocomplete features were completely ignored by the IDE.
+
+### Root Cause
+The plugin.xml was registering extensions with `language="HTML"`, but IntelliJ IDEA/WebStorm actually uses `language="XML"` for HTML files. This caused the IDE to never invoke the plugin's completion and navigation contributors.
+
+### Solution
+1. **Changed plugin.xml**: Updated `completion.contributor` and `psi.referenceContributor` from `language="HTML"` to `language="XML"`
+2. **Improved completion pattern**: Updated the completion contributor to use `PlatformPatterns.psiElement(XmlTokenType.XML_NAME).withParent(XmlPatterns.xmlAttribute())` for more reliable attribute name completion
+
+These minimal changes ensure the plugin is properly registered and activated when editing HTML files.
+
 ## Overview
 
 The plugin has been fully implemented according to the specification in the problem statement. All required components are in place and follow the IntelliJ Platform plugin architecture.
