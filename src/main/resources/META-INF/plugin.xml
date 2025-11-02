@@ -13,15 +13,22 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Completion for HTML tags -->
-    <completion.contributor language="HTML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
-    <!-- Completion inside JS/TS template literals -->
+    <completion.contributor language="XML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+    <!-- Note: JS/TS completion contributors removed - they were causing runtime errors.
+         Template literal completion will be added via a different mechanism in the future. -->
+    <!--
     <completion.contributor language="JavaScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
     <completion.contributor language="TypeScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
+    -->
 
     <!-- Navigation tag -> class in HTML and templates -->
-    <psi.referenceContributor language="HTML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    <psi.referenceContributor language="XML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    <!-- Note: JS/TS reference contributors removed - they were causing runtime errors.
+         Template literal tag navigation will be added via a different mechanism in the future. -->
+    <!--
     <psi.referenceContributor language="JavaScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
     <psi.referenceContributor language="TypeScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
+    -->
 
     <!-- Structure view for JS/TS files -->
     <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
@@ -31,9 +38,9 @@
     <postStartupActivity implementation="com.david.litdevtools.LitStartupActivity"/>
 
     <!-- Notification group -->
-    <notificationGroup id="Lit DevTools" displayType="BALLOON"/>
+    <notificationGroup id="Lit DevTools" displayType="BALLOON" isLogByDefault="false"/>
 
     <!-- Tool window -->
-    <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory" icon="AllIcons.Toolwindows.ToolWindowInspection"/>
+    <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory"/>
   </extensions>
 </idea-plugin>
