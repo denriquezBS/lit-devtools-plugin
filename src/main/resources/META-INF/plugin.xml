@@ -6,6 +6,7 @@
 
   <description>Developer experience for Lit 2.x–3.x web components: completion, navigation, and structured view. Tested on WebStorm 2024.2 (build 242.*).</description>
 
+  <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lang</depends>
   <depends>JavaScript</depends>
 
