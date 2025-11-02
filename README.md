@@ -57,10 +57,13 @@ lit-devtools-plugin/
 Once installed, the plugin automatically enhances your Lit development experience:
 
 ### Navigation
-- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) in HTML to navigate to its TypeScript class definition
+- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) in HTML files to navigate to its TypeScript class definition
+- **Ctrl/Cmd-Click** on custom element tags inside TypeScript/JavaScript `html` template literals to navigate to their class definitions
+  - Example: In a Lit component's `render()` method, click on `<my-component>` to jump to that component's file
 
 ### Code Completion
 - When editing HTML files, start typing attributes on Lit components to see autocomplete suggestions based on `@property()` decorators
+- When editing TypeScript/JavaScript files, autocomplete also works inside `html` template literals
 - Events are suggested with the `@` prefix (e.g., `@my-event`)
 
 ### Structure View
