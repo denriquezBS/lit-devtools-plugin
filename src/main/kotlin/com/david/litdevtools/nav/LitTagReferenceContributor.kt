@@ -26,7 +26,7 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
           
           // Find all JS/TS files by extension
           listOf("ts", "js", "tsx", "jsx", "mjs").forEach { ext ->
-            com.intellij.psi.search.FilenameIndex.getAllFilesByExt(project, ext, scope).forEach { vf ->
+            FilenameIndex.getAllFilesByExt(project, ext, scope).forEach { vf ->
               val psiFile = psiManager.findFile(vf) as? JSFile ?: return@forEach
               val components = LitTagResolver.findCandidates(psiFile)
               components[tagName]?.let { candidates.add(it) }
