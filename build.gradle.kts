@@ -5,48 +5,27 @@ plugins {
 
 repositories {
   mavenCentral()
-
-  intellijPlatform {
-    defaultRepositories()
-  }
+  intellijPlatform { defaultRepositories() }
 }
 
 kotlin { jvmToolchain(17) }
 
 intellijPlatform {
-  // WebStorm = IU with JS plugin, we target the IntelliJ platform
   buildSearchableOptions = false
   instrumentCode = true
-
   pluginConfiguration {
-    ideaVersion {
-      sinceBuild = "242"
-      untilBuild = provider { null }
-    }
+    ideaVersion { sinceBuild = "242"; untilBuild = provider { null } }
   }
 }
 
 dependencies {
   intellijPlatform {
-    webstorm("2025.2")
+    intellijIdeaUltimate("2024.2")
     bundledPlugin("JavaScript")
-
     pluginVerifier()
     zipSigner()
-    instrumentationTools()
   }
+  testImplementation("junit:junit:4.13.2")
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+tasks.test { useJUnit() }
