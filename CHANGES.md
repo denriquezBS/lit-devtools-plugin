@@ -1,3 +1,48 @@
+# Plugin Changes History
+
+## Version 0.1.1 - Runtime Extension Error Fix (2025-11-02)
+
+### Problem Fixed
+The plugin was causing runtime errors in IntelliJ Platform 242.20224.300:
+```
+SEVERE - #c.i.o.u.KeyedExtensionCollector - 
+Plugin to blame: Lit DevTools version: 0.1.1
+ExtensionPointImpl: implementation class is not specified
+```
+
+### Root Cause
+1. **Incompatible Language Extensions**: Using `psi.referenceContributor` with JavaScript/TypeScript languages caused runtime errors because the contributor was using XML patterns (`XmlPatterns.xmlTag()`) which don't apply to JS/TS code.
+2. **Wrong Language ID**: "HTML" should be "XML" for XML-based pattern matching in IntelliJ Platform 242+.
+3. **Icon Reference Issue**: Direct AllIcons class reference in toolWindow caused loading problems.
+4. **Missing Notification Attributes**: notificationGroup needed modern platform attributes.
+
+### Changes Made
+
+#### plugin.xml
+- Changed language from "HTML" to "XML" for completion and reference contributors
+- Removed problematic JavaScript/TypeScript completion.contributor registrations (commented out for future implementation)
+- Removed problematic JavaScript/TypeScript psi.referenceContributor registrations (commented out)
+- Removed `icon` attribute from toolWindow declaration
+- Added `isLogByDefault="false"` to notificationGroup
+
+#### LitConstants.kt
+- Updated PLUGIN_VERSION from "0.1.0" to "0.1.1"
+
+### Impact
+- **Fixed**: Runtime SEVERE errors no longer occur
+- **Working**: HTML/XML completion and navigation for Lit components
+- **Working**: Structure view for TypeScript/JavaScript files
+- **Working**: Tool window and startup notifications
+- **Removed Temporarily**: Template literal completion/navigation in JS/TS files (will be re-added with proper implementation)
+
+### Future Work
+Template literal support for Lit's html tagged templates in JavaScript/TypeScript will require:
+- Language injection for HTML within template literals
+- Custom PSI patterns for template literal handling
+- Different extension point mechanism (not psi.referenceContributor)
+
+---
+
 # Plugin Status Verification - Implementation Summary
 
 ## Problem Addressed
