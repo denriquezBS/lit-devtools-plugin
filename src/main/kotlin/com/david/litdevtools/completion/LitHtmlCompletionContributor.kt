@@ -7,11 +7,10 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.FilenameIndex
 import com.intellij.util.ProcessingContext
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
-import com.intellij.lang.javascript.JavaScriptFileType
 import com.intellij.lang.javascript.psi.JSFile
 
 class LitHtmlCompletionContributor : CompletionContributor() {
@@ -41,13 +40,15 @@ class LitHtmlCompletionContributor : CompletionContributor() {
     val project = tag.project
     val tagName = tag.name
     val scope = GlobalSearchScope.projectScope(project)
+    val psiManager = PsiManager.getInstance(project)
     
-    // Search across all JavaScript/TypeScript files in the project
-    val jsFiles = FileTypeIndex.getFiles(JavaScriptFileType.INSTANCE, scope)
-    jsFiles.forEach { vf ->
-      val psiFile = PsiManager.getInstance(project).findFile(vf) as? JSFile ?: return@forEach
-      val components = LitTagResolver.findCandidates(psiFile)
-      components[tagName]?.let { return it }
+    // Search across all JavaScript/TypeScript files by extension
+    listOf("ts", "js", "tsx", "jsx", "mjs").forEach { ext ->
+      com.intellij.psi.search.FilenameIndex.getAllFilesByExt(project, ext, scope).forEach { vf ->
+        val psiFile = psiManager.findFile(vf) as? JSFile ?: return@forEach
+        val components = LitTagResolver.findCandidates(psiFile)
+        components[tagName]?.let { return it }
+      }
     }
     return null
   }
