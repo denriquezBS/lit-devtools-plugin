@@ -67,7 +67,7 @@ object LitPsiUtil {
 
       if (isProperty) props += LitProp(f.name ?: "", attrName, typeStr, defaultVal, f)
       else if (isState) states += LitProp(f.name ?: "", null, typeStr, defaultVal, f)
-      else if (f.isPrivate || f.name?.startsWith("_") == true) privs += f
+      else if (attrList?.accessType == JSAttributeList.AccessType.PRIVATE || f.name?.startsWith("_") == true) privs += f
     }
     return Triple(props, states, privs)
   }
