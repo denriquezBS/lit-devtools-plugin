@@ -3,9 +3,9 @@ plugins {
   kotlin("jvm") version "2.0.21"
 }
 
-repositories { 
+repositories {
   mavenCentral()
-  
+
   intellijPlatform {
     defaultRepositories()
   }
@@ -17,7 +17,7 @@ intellijPlatform {
   // WebStorm = IU with JS plugin, we target the IntelliJ platform
   buildSearchableOptions = false
   instrumentCode = true
-  
+
   pluginConfiguration {
     ideaVersion {
       sinceBuild = "242"
@@ -28,13 +28,25 @@ intellijPlatform {
 
 dependencies {
   intellijPlatform {
-    intellijIdeaUltimate("2024.2")
+    webstorm("2025.2")
     bundledPlugin("JavaScript")
-    
+
     pluginVerifier()
     zipSigner()
     instrumentationTools()
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
