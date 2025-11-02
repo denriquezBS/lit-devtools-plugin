@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 object LitPsiUtil {
   data class LitComponent(
     val tagName: String,
-    val jsClass: JSClass,
+    val jsClass: TypeScriptClass,
     val properties: List<LitProp>,
     val states: List<LitProp>,
     val privates: List<JSField>,
@@ -24,12 +24,12 @@ object LitPsiUtil {
     val field: JSField
   )
 
-  fun isLitElement(klass: JSClass): Boolean {
+  fun isLitElement(klass: TypeScriptClass): Boolean {
     // class Foo extends LitElement
     return (klass.extendsList?.members?.any { it.text.contains("LitElement") } == true)
   }
 
-  fun customElementTag(klass: JSClass): String? {
+  fun customElementTag(klass: TypeScriptClass): String? {
     // @customElement('my-tag')
     val attrs = klass.attributeList ?: return null
     val decorators = attrs.decorators ?: return null
@@ -46,7 +46,7 @@ object LitPsiUtil {
     return null
   }
 
-  fun litMembers(klass: JSClass): Triple<List<LitProp>, List<LitProp>, List<JSField>> {
+  fun litMembers(klass: TypeScriptClass): Triple<List<LitProp>, List<LitProp>, List<JSField>> {
     val props = mutableListOf<LitProp>()
     val states = mutableListOf<LitProp>()
     val privs = mutableListOf<JSField>()
@@ -72,19 +72,19 @@ object LitPsiUtil {
     return Triple(props, states, privs)
   }
 
-  fun methods(klass: JSClass): List<JSFunction> = klass.functions.toList()
+  fun methods(klass: TypeScriptClass): List<JSFunction> = klass.functions.toList()
 
-  fun events(klass: JSClass): List<String> {
+  fun events(klass: TypeScriptClass): List<String> {
     // Simple approach: searches for dispatchEvent(new CustomEvent('x')) in the class body
     val bodyText = klass.text
     val regex = Regex("dispatchEvent\\(new\\s+CustomEvent\\([\\'\"]([a-zA-Z0-9_-]+)[\\'\"]")
     return regex.findAll(bodyText).map { it.groupValues[1] }.distinct().toList()
   }
 
-  fun hasStyles(klass: JSClass): Boolean =
+  fun hasStyles(klass: TypeScriptClass): Boolean =
     klass.fields.any { it.name == "styles" || it.text.contains("css`") }
 
-  fun tryBuildComponent(klass: JSClass): LitComponent? {
+  fun tryBuildComponent(klass: TypeScriptClass): LitComponent? {
     if (!isLitElement(klass)) return null
     val tag = customElementTag(klass) ?: return null
     val (props, states, privs) = litMembers(klass)

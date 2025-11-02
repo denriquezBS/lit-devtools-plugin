@@ -33,11 +33,11 @@ class LitHtmlCompletionContributor : CompletionContributor() {
       })
   }
 
-  private fun resolveTagToClass(tag: XmlTag): com.intellij.lang.javascript.psi.JSClass? {
+  private fun resolveTagToClass(tag: XmlTag): com.intellij.lang.javascript.psi.ecma6.TypeScriptClass? {
     val file = tag.containingFile
-    val jsClasses = com.intellij.psi.util.PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.JSClass }
+    val jsClasses = com.intellij.psi.util.PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
     jsClasses.forEach {
-      val klass = it as com.intellij.lang.javascript.psi.JSClass
+      val klass = it as com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
       val comp = LitPsiUtil.tryBuildComponent(klass) ?: return@forEach
       if (comp.tagName == tag.name) return klass
     }
