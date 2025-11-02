@@ -6,7 +6,9 @@ import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.JSField
 import com.intellij.lang.javascript.psi.JSFunction
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
+import javax.swing.Icon
 
 object LitStructureElements {
   fun childrenFor(klass: TypeScriptClass): MutableCollection<StructureViewTreeElement> {
@@ -42,7 +44,11 @@ object LitStructureElements {
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
     override fun canNavigateToSource(): Boolean = false
-    override fun getPresentation() = com.intellij.navigation.ItemPresentationProviders.getItemPresentation(this)
+    override fun getPresentation(): ItemPresentation = object : ItemPresentation {
+      override fun getPresentableText(): String = title
+      override fun getLocationString(): String? = null
+      override fun getIcon(unused: Boolean): Icon? = null
+    }
     override fun getChildren(): Array<StructureViewTreeElement> = children.toTypedArray()
   }
 
@@ -61,7 +67,11 @@ object LitStructureElements {
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
     override fun canNavigateToSource(): Boolean = false
-    override fun getPresentation() = com.intellij.navigation.ItemPresentationProviders.getItemPresentation(this)
+    override fun getPresentation(): ItemPresentation = object : ItemPresentation {
+      override fun getPresentableText(): String = label
+      override fun getLocationString(): String? = null
+      override fun getIcon(unused: Boolean): Icon? = null
+    }
     override fun getChildren(): Array<StructureViewTreeElement> = emptyArray()
   }
 }
