@@ -14,8 +14,8 @@ After installation, you should immediately see these signs that the plugin is ac
 
 ## Features
 
-* **Autocompletion** of Lit tags and attributes in HTML
-* **Ctrl/Cmd-Click navigation** from `<my-tag>` to the TypeScript class
+* **Autocompletion** of Lit tags and attributes in HTML/XML files
+* **Ctrl/Cmd-Click navigation** from `<my-tag>` to the TypeScript class in HTML/XML files
 * **Structured view** of Web Components organized by:
   - Properties
   - State
@@ -23,6 +23,8 @@ After installation, you should immediately see these signs that the plugin is ac
   - Methods
   - Events
   - CSS
+
+**Note**: Version 0.1.1 focuses on HTML/XML file support. Template literal support (for `html\`...\`` in TypeScript/JavaScript) will be added in a future release.
 
 Tested with IntelliJ Platform 2024.2+ and the JavaScript plugin.
 
@@ -54,7 +56,7 @@ lit-devtools-plugin/
    ./gradlew buildPlugin
    ```
 
-   The ZIP file will be created in `build/distributions/lit-devtools-plugin-0.1.0.zip`.
+   The ZIP file will be created in `build/distributions/lit-devtools-plugin-0.1.1.zip`.
 
 2. **Install in WebStorm/IntelliJ:**
    - Open WebStorm/IntelliJ
@@ -78,14 +80,15 @@ After installing and restarting WebStorm/IntelliJ, you should see confirmation t
 3. **IDE Logs**: Check Help → Show Log in Explorer/Finder and search for "Lit DevTools" to see detailed activity logs
 
 ### Navigation
-- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) in HTML files to navigate to its TypeScript class definition
-- **Ctrl/Cmd-Click** on custom element tags inside TypeScript/JavaScript `html` template literals to navigate to their class definitions
-  - Example: In a Lit component's `render()` method, click on `<my-component>` to jump to that component's file
+- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) in HTML/XML files to navigate to its TypeScript class definition
+
+**Note**: Navigation inside TypeScript/JavaScript `html` template literals is planned for a future release.
 
 ### Code Completion
-- When editing HTML files, start typing attributes on Lit components to see autocomplete suggestions based on `@property()` decorators
-- When editing TypeScript/JavaScript files, autocomplete also works inside `html` template literals
+- When editing HTML/XML files, start typing attributes on Lit components to see autocomplete suggestions based on `@property()` decorators
 - Events are suggested with the `@` prefix (e.g., `@my-event`)
+
+**Note**: Completion inside TypeScript/JavaScript `html` template literals is planned for a future release.
 
 ### Structure View
 - Open any TypeScript file containing a Lit component
