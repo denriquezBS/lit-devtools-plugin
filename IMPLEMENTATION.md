@@ -2,7 +2,27 @@
 
 This document provides a technical overview of the Lit DevTools Plugin implementation.
 
-## Recent Fix (2025-11-02)
+## Recent Enhancement (2025-11-02)
+
+### Issue
+Users reported uncertainty about whether the plugin was active in WebStorm 2025, with no visible confirmation that it was running or that code was executing.
+
+### Solution
+Added comprehensive diagnostics and visibility features:
+
+1. **Startup Notification**: `LitStartupActivity` shows a balloon notification when the plugin loads
+2. **Diagnostic Logging**: Added `Logger` instances to all major components with INFO-level messages for all key operations
+3. **Lit Inspector Tool Window**: Enhanced from a placeholder to a full diagnostic panel showing:
+   - Plugin status and version
+   - Currently open file analysis
+   - Detected Lit components with full details (properties, state, events, etc.)
+   - Refresh button for real-time updates
+   - Instructions on how to access detailed logs
+4. **Documentation**: Added comprehensive troubleshooting section and TESTING.md guide
+
+These changes ensure users can immediately verify the plugin is active and diagnose any issues.
+
+## Recent Fix (2025-11-02 - Earlier)
 
 ### Issue
 The plugin was not activating - navigation and autocomplete features were completely ignored by the IDE.
@@ -98,10 +118,61 @@ Basic settings page (placeholder for future configuration options):
 - Implements `Configurable` interface
 - Provides a checkbox to enable/disable the plugin
 
-#### LitToolWindowFactory.kt (14 lines)
-Optional tool window (commented out in plugin.xml):
-- Creates a "Lit Inspector" panel
-- Can be activated by uncommenting the `<toolWindow>` declaration
+#### LitStartupActivity.kt (28 lines) **NEW**
+Startup activity to confirm plugin is loaded:
+- Implements `ProjectActivity` interface
+- Shows notification balloon on project open
+- Logs startup event for verification
+
+#### LitToolWindowFactory.kt (120 lines) **ENHANCED**
+Diagnostic tool window showing plugin status and detected components:
+- Creates a "Lit Inspector" panel (now enabled by default in plugin.xml)
+- `LitInspectorPanel`: Displays comprehensive diagnostic information:
+  - Plugin version and active status
+  - Current file being viewed
+  - All detected Lit components with full details
+  - Refresh button to update the display
+  - Instructions for accessing detailed logs
+- Real-time component analysis
+- User-friendly status display
+
+## Diagnostics and Logging
+
+All major components include comprehensive logging at INFO level:
+
+### LitPsiUtil
+- Logs whenever a Lit component is successfully detected
+- Includes component tag name, property count, state count, and event count
+- Example: `INFO - Lit DevTools: Found component <my-element> with 3 properties, 2 state fields, 1 events`
+
+### LitHtmlCompletionContributor
+- Logs initialization
+- Logs every completion request attempt
+- Logs success/failure of tag resolution
+- Logs number of completions provided
+- Example: `INFO - Lit DevTools: Providing 5 property completions and 2 event completions for <my-element>`
+
+### LitTagReferenceContributor
+- Logs initialization and registration
+- Logs every navigation lookup
+- Logs number of targets found
+- Example: `INFO - Lit DevTools: Found 1 navigation target(s) for <my-element>`
+
+### LitStructureViewBuilder
+- Logs initialization
+- Logs structure view creation for each file
+- Example: `INFO - Lit DevTools: Creating structure view for my-component.ts`
+
+### LitStartupActivity
+- Logs plugin startup
+- Logs notification delivery
+- Example: `INFO - Lit DevTools: Plugin starting up for project MyProject`
+
+### LitInspectorPanel
+- Logs panel refresh operations
+- Example: `INFO - Lit DevTools: Refreshing inspector panel`
+
+Users can find these logs in Help → Show Log in Explorer/Finder and search for "Lit DevTools".
 
 ## Key Design Decisions
 
@@ -190,8 +261,8 @@ As noted in the specification, potential additions include:
 
 ## File Statistics
 
-- **Total Kotlin files**: 8
-- **Total lines of code**: ~340 lines
+- **Total Kotlin files**: 9 (added LitStartupActivity)
+- **Total lines of code**: ~540 lines (up from ~340)
 - **Configuration files**: 4 (build.gradle.kts, settings.gradle.kts, gradle.properties, plugin.xml)
 - **Example files**: 2 (example-component.ts, index.html)
-- **Documentation**: 2 (README.md, IMPLEMENTATION.md)
+- **Documentation**: 3 (README.md, IMPLEMENTATION.md, TESTING.md)

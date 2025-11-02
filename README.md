@@ -2,6 +2,16 @@
 
 A local WebStorm/IntelliJ plugin (Kotlin) for enhanced Lit 2.x–3.x web components development experience.
 
+## Quick Start: Is the Plugin Working?
+
+After installation, you should immediately see these signs that the plugin is active:
+
+1. **📢 Startup Notification**: A balloon notification saying "Lit DevTools Plugin Active"
+2. **🔧 Lit Inspector Tool Window**: A new "Lit Inspector" tab on the right side of your IDE
+3. **📝 Log Messages**: Search for "Lit DevTools" in Help → Show Log to see plugin activity
+
+**Not seeing these?** Check the [Troubleshooting](#troubleshooting) section or see [TESTING.md](TESTING.md) for detailed verification steps.
+
 ## Features
 
 * **Autocompletion** of Lit tags and attributes in HTML
