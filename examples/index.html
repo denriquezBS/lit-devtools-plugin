@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lit DevTools Plugin Example</title>
+</head>
+<body>
+  <h1>Lit DevTools Plugin Demo</h1>
+  
+  <p>
+    With the Lit DevTools plugin installed, you can:
+  </p>
+  <ul>
+    <li><strong>Ctrl/Cmd-Click</strong> on the tag below to navigate to the TypeScript class</li>
+    <li>Get <strong>autocomplete</strong> suggestions for attributes like "name", "count", "disabled"</li>
+    <li>See event suggestions like "@count-changed" and "@data-loaded"</li>
+  </ul>
+
+  <!-- Ctrl/Cmd-Click on example-component to navigate to the class -->
+  <example-component 
+    name="Developer"
+    count="5"
+    @count-changed="${(e) => console.log('Count changed:', e.detail)}"
+    @data-loaded="${(e) => console.log('Data loaded:', e.detail)}"
+  ></example-component>
+
+  <script type="module" src="./example-component.js"></script>
+</body>
+</html>
