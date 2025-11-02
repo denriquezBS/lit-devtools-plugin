@@ -40,6 +40,7 @@ lit-devtools-plugin/
 
 1. **Build the plugin:**
    ```bash
+   gradle wrapper
    ./gradlew buildPlugin
    ```
 
