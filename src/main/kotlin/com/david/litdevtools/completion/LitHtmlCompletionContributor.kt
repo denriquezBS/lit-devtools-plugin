@@ -1,14 +1,17 @@
 package com.david.litdevtools.completion
 
 import com.david.litdevtools.psi.LitPsiUtil
+import com.david.litdevtools.index.LitTagResolver
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.XmlPatterns
-import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.FilenameIndex
 import com.intellij.util.ProcessingContext
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
+import com.intellij.lang.javascript.psi.JSFile
 
 class LitHtmlCompletionContributor : CompletionContributor() {
   init {
@@ -34,12 +37,18 @@ class LitHtmlCompletionContributor : CompletionContributor() {
   }
 
   private fun resolveTagToClass(tag: XmlTag): com.intellij.lang.javascript.psi.ecma6.TypeScriptClass? {
-    val file = tag.containingFile
-    val jsClasses = com.intellij.psi.util.PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
-    jsClasses.forEach {
-      val klass = it as com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
-      val comp = LitPsiUtil.tryBuildComponent(klass) ?: return@forEach
-      if (comp.tagName == tag.name) return klass
+    val project = tag.project
+    val tagName = tag.name
+    val scope = GlobalSearchScope.projectScope(project)
+    val psiManager = PsiManager.getInstance(project)
+    
+    // Search across all JavaScript/TypeScript files by extension
+    listOf("ts", "js", "tsx", "jsx", "mjs").forEach { ext ->
+      FilenameIndex.getAllFilesByExt(project, ext, scope).forEach { vf ->
+        val psiFile = psiManager.findFile(vf) as? JSFile ?: return@forEach
+        val components = LitTagResolver.findCandidates(psiFile)
+        components[tagName]?.let { return it }
+      }
     }
     return null
   }

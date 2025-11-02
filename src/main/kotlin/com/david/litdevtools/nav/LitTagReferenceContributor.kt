@@ -1,11 +1,12 @@
 package com.david.litdevtools.nav
 
-import com.david.litdevtools.psi.LitPsiUtil
+import com.david.litdevtools.index.LitTagResolver
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.search.FilenameIndex
 import com.intellij.xml.util.HtmlUtil
+import com.intellij.lang.javascript.psi.JSFile
 
 class LitTagReferenceContributor : PsiReferenceContributor() {
   override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
@@ -16,16 +17,21 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
           val tag = element as? com.intellij.psi.xml.XmlTag ?: return PsiReference.EMPTY_ARRAY
           if (!HtmlUtil.isHtmlTag(tag)) return PsiReference.EMPTY_ARRAY
           val project = tag.project
-          // Simple search: traverse project JS/TS files to find the class decorated with @customElement(tag.name)
+          val tagName = tag.name
+          
+          // Search across all JavaScript/TypeScript files in the project
           val scope = GlobalSearchScope.projectScope(project)
-          // Heuristic: don't iterate everything; try local resolution (parent directory) first
           val candidates = mutableListOf<PsiElement>()
-          val file = tag.containingFile
-          val jsFiles = PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
-          jsFiles.mapNotNull { it as? com.intellij.lang.javascript.psi.ecma6.TypeScriptClass }
-            .mapNotNull { LitPsiUtil.tryBuildComponent(it) }
-            .filter { it.tagName == tag.name }
-            .mapTo(candidates) { it.jsClass }
+          val psiManager = PsiManager.getInstance(project)
+          
+          // Find all JS/TS files by extension
+          listOf("ts", "js", "tsx", "jsx", "mjs").forEach { ext ->
+            FilenameIndex.getAllFilesByExt(project, ext, scope).forEach { vf ->
+              val psiFile = psiManager.findFile(vf) as? JSFile ?: return@forEach
+              val components = LitTagResolver.findCandidates(psiFile)
+              components[tagName]?.let { candidates.add(it) }
+            }
+          }
 
           return if (candidates.isNotEmpty()) arrayOf(object : PsiReferenceBase<com.intellij.psi.xml.XmlTag>(tag, true) {
             override fun resolve(): PsiElement? = candidates.firstOrNull()
