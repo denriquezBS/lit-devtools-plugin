@@ -8,10 +8,10 @@ repositories { mavenCentral() }
 kotlin { jvmToolchain(17) }
 
 intellij {
-  // WebStorm = IU avec plugin JS, on cible la plate‑forme IntelliJ
+  // WebStorm = IU with JS plugin, we target the IntelliJ platform
   version.set("2024.2")
   type.set("IU")
-  plugins.set(listOf("JavaScript")) // indispensable pour PSI JS/TS
+  plugins.set(listOf("JavaScript")) // essential for JS/TS PSI
 }
 
 tasks {
@@ -22,7 +22,7 @@ tasks {
 }
 
 dependencies {
-  // rien de spécial : tout vient de la platform + plugin JavaScript
+  // nothing special: everything comes from the platform + JavaScript plugin
 }
 
 

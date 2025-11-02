@@ -63,7 +63,7 @@ object LitPsiUtil {
       }
       val defaultVal = f.initializer?.text
       val typeStr = f.jsType?.typeText
-      val attrName = if (isProperty) f.name else null // simplifié; on peut lire options attribute:{}
+      val attrName = if (isProperty) f.name else null // simplified; can read options attribute:{} later
 
       if (isProperty) props += LitProp(f.name ?: "", attrName, typeStr, defaultVal, f)
       else if (isState) states += LitProp(f.name ?: "", null, typeStr, defaultVal, f)
@@ -75,7 +75,7 @@ object LitPsiUtil {
   fun methods(klass: JSClass): List<JSFunction> = klass.functions.toList()
 
   fun events(klass: JSClass): List<String> {
-    // naïf: cherche dispatchEvent(new CustomEvent('x')) dans le corps de la classe
+    // Simple approach: searches for dispatchEvent(new CustomEvent('x')) in the class body
     val bodyText = klass.text
     val regex = Regex("dispatchEvent\\(new\\s+CustomEvent\\([\\'\"]([a-zA-Z0-9_-]+)[\\'\"]")
     return regex.findAll(bodyText).map { it.groupValues[1] }.distinct().toList()

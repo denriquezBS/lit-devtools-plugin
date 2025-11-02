@@ -20,7 +20,7 @@
     <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
     <lang.structureViewBuilder language="TypeScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>
 
-    <!-- (Optionnel) Tool window
+    <!-- (Optional) Tool window
     <toolWindow id="Lit Inspector" anchor="right" factoryClass="com.david.litdevtools.ui.LitToolWindowFactory"/>
     -->
   </extensions>

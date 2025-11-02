@@ -27,7 +27,7 @@ class LitHtmlCompletionContributor : CompletionContributor() {
               .withTailText(prop.defaultValue?.let { " = $it" } ?: "", true)
             r.addElement(le)
           }
-          // Events (naïf): propose @event et onInput-like
+          // Events (simple): suggest @event and onInput-like handlers
           comp.events.forEach { ev -> r.addElement(LookupElementBuilder.create("@${ev}")) }
         }
       })

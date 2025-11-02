@@ -19,8 +19,8 @@ class LitTagIndex : StringStubIndexExtension<JSClass>() {
     StubIndex.getElements(KEY, tag, project, GlobalSearchScope.projectScope(project), JSClass::class.java)
 }
 
-// NOTE: Pour un MVP rapide on peut éviter la génération de stubs custom
-// et résoudre à la volée via un visiteur PSI (moins perf mais suffisant).
+// NOTE: For a quick MVP we can avoid generating custom stubs
+// and resolve on-the-fly via a PSI visitor (less performant but sufficient).
 object LitTagResolver {
   fun findCandidates(file: JSFile): Map<String, JSClass> {
     val found = mutableMapOf<String, JSClass>()

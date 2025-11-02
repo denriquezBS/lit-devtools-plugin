@@ -16,10 +16,10 @@ class LitTagReferenceContributor : PsiReferenceContributor() {
           val tag = element as? com.intellij.psi.xml.XmlTag ?: return PsiReference.EMPTY_ARRAY
           if (!HtmlUtil.isHtmlTag(tag)) return PsiReference.EMPTY_ARRAY
           val project = tag.project
-          // Recherche simple : parcourir les JS/TS du projet et trouver la classe décorée @customElement(tag.name)
+          // Simple search: traverse project JS/TS files to find the class decorated with @customElement(tag.name)
           val scope = GlobalSearchScope.projectScope(project)
           val files = PsiShortNamesCache.getInstance(project).allFileNames
-          // Heuristique : ne pas itérer tout; on essaie une résolution locale (parent directory) d'abord
+          // Heuristic: don't iterate everything; try local resolution (parent directory) first
           val candidates = mutableListOf<PsiElement>()
           val file = tag.containingFile
           val jsFiles = PsiTreeUtil.collectElements(file) { it is com.intellij.lang.javascript.psi.JSClass }
