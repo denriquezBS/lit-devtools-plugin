@@ -1,28 +1,40 @@
 plugins {
-  id("org.jetbrains.intellij") version "1.17.2"
-  kotlin("jvm") version "1.9.24"
+  id("org.jetbrains.intellij.platform") version "2.10.3"
+  kotlin("jvm") version "2.0.21"
 }
 
-repositories { mavenCentral() }
+repositories { 
+  mavenCentral()
+  
+  intellijPlatform {
+    defaultRepositories()
+  }
+}
 
 kotlin { jvmToolchain(17) }
 
-intellij {
+intellijPlatform {
   // WebStorm = IU with JS plugin, we target the IntelliJ platform
-  version.set("2024.2")
-  type.set("IU")
-  plugins.set(listOf("JavaScript")) // essential for JS/TS PSI
-}
-
-tasks {
-  patchPluginXml {
-    sinceBuild.set("242")
-    untilBuild.set(null as String?)
+  buildSearchableOptions = false
+  instrumentCode = true
+  
+  pluginConfiguration {
+    ideaVersion {
+      sinceBuild = "242"
+      untilBuild = provider { null }
+    }
   }
 }
 
 dependencies {
-  // nothing special: everything comes from the platform + JavaScript plugin
+  intellijPlatform {
+    intellijIdeaUltimate("2024.2")
+    bundledPlugin("JavaScript")
+    
+    pluginVerifier()
+    zipSigner()
+    instrumentationTools()
+  }
 }
 
 
