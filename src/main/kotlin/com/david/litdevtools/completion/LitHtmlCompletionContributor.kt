@@ -12,7 +12,7 @@ import com.intellij.psi.xml.XmlTag
 
 class LitHtmlCompletionContributor : CompletionContributor() {
   init {
-    // Attributs pour un tag Lit
+    // Attributes for a Lit tag
     extend(CompletionType.BASIC, XmlPatterns.xmlAttribute().withParent(XmlPatterns.xmlTag()),
       object : CompletionProvider<CompletionParameters>() {
         override fun addCompletions(p: CompletionParameters, ctx: ProcessingContext, r: CompletionResultSet) {
