@@ -81,7 +81,7 @@ object LitPsiUtil {
       val kebab = className
         .replace(Regex("([a-z])([A-Z])"), "$1-$2")
         .replace(Regex("([A-Z])([A-Z][a-z])"), "$1-$2")
-        .toLowerCase()
+        .lowercase()
       if (kebab.contains("-")) {
         LOG.info("Lit DevTools: Derived tag name '${kebab}' from class name '${className}'")
         return kebab
