@@ -1,6 +1,7 @@
 package com.david.litdevtools.structure
 
 import com.david.litdevtools.psi.LitPsiUtil
+import com.intellij.icons.AllIcons
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
@@ -15,12 +16,24 @@ object LitStructureElements {
     val comp = LitPsiUtil.tryBuildComponent(klass) ?: return mutableListOf()
     val out = mutableListOf<StructureViewTreeElement>()
 
-    out += Section("Properties", comp.properties.map { FieldItem(it.field, renderProp(it)) })
-    out += Section("State", comp.states.map { FieldItem(it.field, renderState(it)) })
-    out += Section("Private", comp.privates.map { FieldItem(it, it.name ?: "#") })
-    out += Section("Methods", comp.methods.map { MethodItem(it, renderMethod(it)) })
-    out += Section("Events", comp.events.map { TextItem(it) })
-    out += Section("CSS", listOf(TextItem(if (comp.hasStyles) "styles" else "(none)")))
+    // Only add sections that have content
+    if (comp.properties.isNotEmpty()) {
+      out += Section("Properties", comp.properties.map { FieldItem(it.field, renderProp(it)) }, AllIcons.Nodes.Property)
+    }
+    if (comp.states.isNotEmpty()) {
+      out += Section("State", comp.states.map { FieldItem(it.field, renderState(it)) }, AllIcons.Nodes.Field)
+    }
+    if (comp.privates.isNotEmpty()) {
+      out += Section("Private", comp.privates.map { FieldItem(it, it.name ?: "#") }, AllIcons.Nodes.FieldPK)
+    }
+    if (comp.methods.isNotEmpty()) {
+      out += Section("Methods", comp.methods.map { MethodItem(it, renderMethod(it)) }, AllIcons.Nodes.Method)
+    }
+    if (comp.events.isNotEmpty()) {
+      out += Section("Events", comp.events.map { TextItem(it, AllIcons.Nodes.Method) }, AllIcons.Nodes.Method)
+    }
+    out += Section("CSS", listOf(TextItem(if (comp.hasStyles) "styles defined" else "no styles", AllIcons.FileTypes.Css)), AllIcons.FileTypes.Css)
+    
     return out
   }
 
@@ -39,15 +52,15 @@ object LitStructureElements {
   }
 
   // —— Nodes ——
-  private class Section(val title: String, val children: List<StructureViewTreeElement>) : StructureViewTreeElement {
+  private class Section(val title: String, val children: List<StructureViewTreeElement>, val icon: Icon?) : StructureViewTreeElement {
     override fun getValue(): Any = title
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
     override fun canNavigateToSource(): Boolean = false
     override fun getPresentation(): ItemPresentation = object : ItemPresentation {
-      override fun getPresentableText(): String = title
+      override fun getPresentableText(): String = "$title (${children.size})"
       override fun getLocationString(): String? = null
-      override fun getIcon(unused: Boolean): Icon? = null
+      override fun getIcon(unused: Boolean): Icon? = icon
     }
     override fun getChildren(): Array<StructureViewTreeElement> = children.toTypedArray()
   }
@@ -55,14 +68,16 @@ object LitStructureElements {
   private class FieldItem(val field: JSField, val label: String) : PsiTreeElementBase<JSField>(field) {
     override fun getPresentableText(): String = label
     override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> = mutableListOf()
+    override fun getIcon(open: Boolean): Icon? = AllIcons.Nodes.Field
   }
 
   private class MethodItem(val fn: JSFunction, val label: String) : PsiTreeElementBase<JSFunction>(fn) {
     override fun getPresentableText(): String = label
     override fun getChildrenBase(): MutableCollection<StructureViewTreeElement> = mutableListOf()
+    override fun getIcon(open: Boolean): Icon? = AllIcons.Nodes.Method
   }
 
-  private class TextItem(val label: String) : StructureViewTreeElement {
+  private class TextItem(val label: String, val icon: Icon?) : StructureViewTreeElement {
     override fun getValue(): Any = label
     override fun navigate(requestFocus: Boolean) {}
     override fun canNavigate(): Boolean = false
@@ -70,7 +85,7 @@ object LitStructureElements {
     override fun getPresentation(): ItemPresentation = object : ItemPresentation {
       override fun getPresentableText(): String = label
       override fun getLocationString(): String? = null
-      override fun getIcon(unused: Boolean): Icon? = null
+      override fun getIcon(unused: Boolean): Icon? = icon
     }
     override fun getChildren(): Array<StructureViewTreeElement> = emptyArray()
   }

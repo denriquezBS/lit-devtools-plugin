@@ -26,23 +26,68 @@ object LitPsiUtil {
   )
 
   fun isLitElement(klass: TypeScriptClass): Boolean {
-    // class Foo extends LitElement
-    return (klass.extendsList?.members?.any { it.text.contains("LitElement") } == true)
+    // Check if class extends LitElement directly or indirectly
+    var current = klass.extendsList
+    while (current != null) {
+      current.members.forEach { member ->
+        val text = member.text
+        if (text.contains("LitElement") || text.contains("ReactiveElement")) {
+          return true
+        }
+      }
+      // Try to follow the inheritance chain
+      break // For now, just check direct parent
+    }
+    
+    // Also check if the class has Lit-specific markers like @property, @state, or render() method
+    val hasLitDecorators = klass.fields.any { field ->
+      field.attributeList?.decorators?.any { dec ->
+        val t = dec.text
+        t.startsWith("@property") || t.startsWith("@state")
+      } == true
+    }
+    
+    val hasRenderMethod = klass.functions.any { it.name == "render" }
+    
+    return hasLitDecorators || hasRenderMethod
   }
 
   fun customElementTag(klass: TypeScriptClass): String? {
-    val attrs = klass.attributeList ?: return null
-    val decorators = attrs.decorators
-    decorators.forEach { dec ->
-      val expr = dec.expression
-      if (expr is JSCallExpression) {
-        val callee = expr.methodExpression?.text
-        if (callee == "customElement" && expr.arguments.isNotEmpty()) {
-          val arg = expr.arguments[0]
-          return arg.text.trim('"', '\'')
+    // First try @customElement decorator
+    val attrs = klass.attributeList
+    if (attrs != null) {
+      attrs.decorators.forEach { dec ->
+        val expr = dec.expression
+        if (expr is JSCallExpression) {
+          val callee = expr.methodExpression?.text
+          if (callee == "customElement" && expr.arguments.isNotEmpty()) {
+            val arg = expr.arguments[0]
+            return arg.text.trim('"', '\'')
+          }
         }
       }
     }
+    
+    // Also try static tagName property or class name to kebab-case
+    klass.fields.firstOrNull { it.name == "tagName" }?.let { field ->
+      field.initializer?.text?.trim('"', '\'')?.let { return it }
+    }
+    
+    // Try to derive from class name (e.g., MyElement -> my-element)
+    // This is a fallback for components without @customElement
+    val className = klass.name
+    if (className != null && className.length > 1) {
+      // Convert PascalCase to kebab-case
+      val kebab = className
+        .replace(Regex("([a-z])([A-Z])"), "$1-$2")
+        .replace(Regex("([A-Z])([A-Z][a-z])"), "$1-$2")
+        .toLowerCase()
+      if (kebab.contains("-")) {
+        LOG.info("Lit DevTools: Derived tag name '${kebab}' from class name '${className}'")
+        return kebab
+      }
+    }
+    
     return null
   }
 
