@@ -4,6 +4,7 @@ import com.david.litdevtools.psi.LitPsiUtil
 import com.david.litdevtools.index.LitTagResolver
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.XmlPatterns
@@ -45,10 +46,16 @@ class LitHtmlCompletionContributor : CompletionContributor() {
             val le = LookupElementBuilder.create(prop.attrName ?: prop.name)
               .withTypeText(prop.jsType ?: "any", true)
               .withTailText(prop.defaultValue?.let { " = $it" } ?: "", true)
+              .withIcon(AllIcons.Nodes.Property)
             r.addElement(le)
           }
           // Events (simple): suggest @event and onInput-like handlers
-          comp.events.forEach { ev -> r.addElement(LookupElementBuilder.create("@${ev}")) }
+          comp.events.forEach { ev -> 
+            val le = LookupElementBuilder.create("@${ev}")
+              .withTypeText("event", true)
+              .withIcon(AllIcons.Nodes.Method)
+            r.addElement(le)
+          }
         }
       })
   }

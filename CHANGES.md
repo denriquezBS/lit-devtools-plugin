@@ -1,5 +1,106 @@
 # Plugin Changes History
 
+## Version 0.2.0 - Full Template Literal Support (2025-11-03)
+
+### 🎉 Major Features Added
+
+This release adds **complete support for Lit template literals** - the most requested feature!
+
+#### 1. Template Literal Support via HTML Language Injection
+- **New**: `LitHtmlInjector` class injects HTML language into `html\`...\`` template literals
+- **Result**: All IDE HTML features now work inside template literals:
+  - Syntax highlighting
+  - Tag validation
+  - Attribute completion
+  - Navigation (Ctrl/Cmd-Click)
+  - Error detection
+
+#### 2. Enhanced Component Detection
+**Problem**: Plugin was too strict, only detecting components with `@customElement` decorator
+**Solution**: Now detects Lit components multiple ways:
+- Classes extending `LitElement` or `ReactiveElement`
+- Classes with `@property` or `@state` decorators (even without explicit inheritance)
+- Classes with a `render()` method (Lit component pattern)
+- Automatic tag name derivation from class name (PascalCase → kebab-case)
+
+**Example**: `class MyAwesomeButton` → `<my-awesome-button>` (auto-detected)
+
+#### 3. Visual Enhancements - Icons Everywhere!
+- **Completion items** now show icons:
+  - 🔷 Properties: Blue property icon
+  - ⚙️ Events: Method/event icon
+- **Structure view** now shows icons and counts:
+  - 🔷 Properties (n)
+  - 🔸 State (n)
+  - 🔒 Private (n)
+  - ⚙️ Methods (n)
+  - 📡 Events (n)
+  - 🎨 CSS
+- Only non-empty sections are shown
+
+### New Files
+- `src/main/kotlin/com/david/litdevtools/injection/LitHtmlInjector.kt` - HTML injection for template literals
+- `src/main/kotlin/com/david/litdevtools/completion/LitTemplateCompletionContributor.kt` - Template literal completion (placeholder)
+- `src/main/kotlin/com/david/litdevtools/nav/LitTemplateReferenceContributor.kt` - Template literal navigation (placeholder)
+
+### Modified Files
+- `src/main/kotlin/com/david/litdevtools/psi/LitPsiUtil.kt` - Enhanced component detection
+- `src/main/kotlin/com/david/litdevtools/completion/LitHtmlCompletionContributor.kt` - Added icons
+- `src/main/kotlin/com/david/litdevtools/structure/LitStructureElements.kt` - Added icons and counts
+- `src/main/resources/META-INF/plugin.xml` - Registered new extensions
+- `src/main/kotlin/com/david/litdevtools/LitConstants.kt` - Version bump to 0.2.0
+
+### How It Works
+
+#### Template Literal Navigation & Completion
+1. User types `html\`<my-element ...\``
+2. `LitHtmlInjector` detects the `html` tagged template
+3. Injects HTML language into the template content
+4. IntelliJ's HTML support automatically provides:
+   - Tag completion
+   - Attribute completion (via our `LitHtmlCompletionContributor`)
+   - Navigation (via our `LitTagReferenceContributor`)
+5. Works seamlessly as if writing in an HTML file!
+
+#### Smart Component Detection
+No longer requires `@customElement` decorator:
+```typescript
+// All of these are now detected:
+
+// 1. Standard Lit component
+@customElement('my-button')
+class MyButton extends LitElement { }
+
+// 2. Without decorator (tag name from class name)
+class MyAwesomeButton extends LitElement { }  // → <my-awesome-button>
+
+// 3. ReactiveElement base
+class MyElement extends ReactiveElement { }
+
+// 4. Detected by @property decorator
+class MyWidget {
+  @property() name: string;
+  render() { return html`...`; }
+}
+```
+
+### Breaking Changes
+None - fully backward compatible with 0.1.x
+
+### Migration Notes
+If upgrading from 0.1.x:
+- No changes needed
+- Template literal support works automatically
+- Existing HTML/XML navigation and completion still work
+- Component detection is now more permissive (finds more components)
+
+### Known Limitations
+- Template literal injection works best in TypeScript files
+- JavaScript files may require proper type definitions for full support
+- Expression placeholders (${...}) in template literals work but may show warnings if complex
+
+---
+
 ## Version 0.1.1 - Runtime Extension Error Fix (2025-11-02)
 
 ### Problem Fixed

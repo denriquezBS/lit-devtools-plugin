@@ -2,7 +2,7 @@
   <id>com.david.lit-devtools</id>
   <name>Lit DevTools</name>
   <vendor email="you@example.com">David</vendor>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
 
   <description>Developer experience for Lit 2.x–3.x web components: completion, navigation, structure view, inspector.</description>
 
@@ -14,21 +14,20 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Completion for HTML tags -->
     <completion.contributor language="XML" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
-    <!-- Note: JS/TS completion contributors removed - they were causing runtime errors.
-         Template literal completion will be added via a different mechanism in the future. -->
-    <!--
-    <completion.contributor language="JavaScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
-    <completion.contributor language="TypeScript" implementationClass="com.david.litdevtools.completion.LitHtmlCompletionContributor"/>
-    -->
+    
+    <!-- Completion for TypeScript/JavaScript template literals -->
+    <completion.contributor language="TypeScript" implementationClass="com.david.litdevtools.completion.LitTemplateCompletionContributor"/>
+    <completion.contributor language="JavaScript" implementationClass="com.david.litdevtools.completion.LitTemplateCompletionContributor"/>
 
-    <!-- Navigation tag -> class in HTML and templates -->
+    <!-- Navigation tag -> class in HTML -->
     <psi.referenceContributor language="XML" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
-    <!-- Note: JS/TS reference contributors removed - they were causing runtime errors.
-         Template literal tag navigation will be added via a different mechanism in the future. -->
-    <!--
-    <psi.referenceContributor language="JavaScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
-    <psi.referenceContributor language="TypeScript" implementationClass="com.david.litdevtools.nav.LitTagReferenceContributor"/>
-    -->
+    
+    <!-- Navigation tag -> class in TypeScript/JavaScript template literals -->
+    <psi.referenceContributor language="TypeScript" implementationClass="com.david.litdevtools.nav.LitTemplateReferenceContributor"/>
+    <psi.referenceContributor language="JavaScript" implementationClass="com.david.litdevtools.nav.LitTemplateReferenceContributor"/>
+    
+    <!-- Language injection for HTML in template literals -->
+    <multiHostInjector implementation="com.david.litdevtools.injection.LitHtmlInjector"/>
 
     <!-- Structure view for JS/TS files -->
     <lang.structureViewBuilder language="JavaScript" implementationClass="com.david.litdevtools.structure.LitStructureViewBuilder"/>

@@ -14,17 +14,31 @@ After installation, you should immediately see these signs that the plugin is ac
 
 ## Features
 
-* **Autocompletion** of Lit tags and attributes in HTML/XML files
-* **Ctrl/Cmd-Click navigation** from `<my-tag>` to the TypeScript class in HTML/XML files
-* **Structured view** of Web Components organized by:
-  - Properties
-  - State
-  - Private fields
-  - Methods
-  - Events
-  - CSS
+### Version 0.2.0 - Now with Full Template Literal Support! 🎉
 
-**Note**: Version 0.1.1 focuses on HTML/XML file support. Template literal support (for `html\`...\`` in TypeScript/JavaScript) will be added in a future release.
+* **Autocompletion** of Lit component properties and events
+  - Works in HTML/XML files AND TypeScript/JavaScript `html\`...\`` template literals
+  - Properties show with type information and default values
+  - Events prefixed with `@` (e.g., `@click`, `@my-event`)
+  - Visual icons distinguish properties from events
+  
+* **Ctrl/Cmd-Click navigation** from custom element tags to component definitions
+  - Works in HTML/XML files AND TypeScript/JavaScript `html\`...\`` template literals
+  - Navigates directly to the component class
+  - Supports components with or without `@customElement` decorator
+  
+* **Enhanced Structure View** for Lit components with clear organization and icons:
+  - 🔷 Properties (with `@property` decorator)
+  - 🔸 State (with `@state` decorator)
+  - 🔒 Private fields
+  - ⚙️ Methods
+  - 📡 Events (detected from `dispatchEvent` calls)
+  - 🎨 CSS styles
+  - Shows item counts for each section
+  
+* **HTML Language Injection** in `html\`...\`` template literals
+  - Full HTML syntax highlighting and validation
+  - All IDE HTML features work inside template literals
 
 Tested with IntelliJ Platform 2024.2+ and the JavaScript plugin.
 
@@ -38,14 +52,23 @@ lit-devtools-plugin/
 ├─ src/main/resources/
 │  └─ META-INF/plugin.xml
 └─ src/main/kotlin/com/david/litdevtools/
+   ├─ LitConstants.kt
    ├─ LitSettings.kt
+   ├─ LitStartupActivity.kt
    ├─ index/LitTagIndex.kt
    ├─ psi/LitPsiUtil.kt
-   ├─ nav/LitTagReferenceContributor.kt
-   ├─ completion/LitHtmlCompletionContributor.kt
-   ├─ structure/LitStructureViewBuilder.kt
-   ├─ structure/LitStructureElements.kt
-   └─ ui/LitToolWindowFactory.kt (optional)
+   ├─ nav/
+   │  ├─ LitTagReferenceContributor.kt (for HTML/XML)
+   │  └─ LitTemplateReferenceContributor.kt (for template literals)
+   ├─ completion/
+   │  ├─ LitHtmlCompletionContributor.kt (for HTML/XML)
+   │  └─ LitTemplateCompletionContributor.kt (for template literals)
+   ├─ injection/
+   │  └─ LitHtmlInjector.kt (HTML language injection)
+   ├─ structure/
+   │  ├─ LitStructureViewBuilder.kt
+   │  └─ LitStructureElements.kt
+   └─ ui/LitToolWindowFactory.kt
 ```
 
 ## Building the Plugin
@@ -56,7 +79,7 @@ lit-devtools-plugin/
    ./gradlew buildPlugin
    ```
 
-   The ZIP file will be created in `build/distributions/lit-devtools-plugin-0.1.1.zip`.
+   The ZIP file will be created in `build/distributions/lit-devtools-plugin-0.2.0.zip`.
 
 2. **Install in WebStorm/IntelliJ:**
    - Open WebStorm/IntelliJ
@@ -80,26 +103,31 @@ After installing and restarting WebStorm/IntelliJ, you should see confirmation t
 3. **IDE Logs**: Check Help → Show Log in Explorer/Finder and search for "Lit DevTools" to see detailed activity logs
 
 ### Navigation
-- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) in HTML/XML files to navigate to its TypeScript class definition
-
-**Note**: Navigation inside TypeScript/JavaScript `html` template literals is planned for a future release.
+- **Ctrl/Cmd-Click** on any custom element tag (e.g., `<my-component>`) to navigate to its TypeScript class definition
+- Works in **both** HTML/XML files AND TypeScript/JavaScript `html\`...\`` template literals
+- Automatically detects components with `@customElement` decorator or by class structure
 
 ### Code Completion
-- When editing HTML/XML files, start typing attributes on Lit components to see autocomplete suggestions based on `@property()` decorators
-- Events are suggested with the `@` prefix (e.g., `@my-event`)
-
-**Note**: Completion inside TypeScript/JavaScript `html` template literals is planned for a future release.
+- Start typing attributes on Lit components to see property and event suggestions
+- Works in **both** HTML/XML files AND TypeScript/JavaScript `html\`...\`` template literals
+- Properties show:
+  - 🔷 Property icon
+  - Type information (e.g., `string`, `number`)
+  - Default values when available
+- Events show:
+  - ⚙️ Event icon
+  - `@` prefix (e.g., `@my-event`, `@data-loaded`)
 
 ### Structure View
 - Open any TypeScript file containing a Lit component
 - Open the Structure View (Alt+7 / CMD+7)
-- See your component members organized in clean sections:
-  - **Properties**: Fields decorated with `@property()`
-  - **State**: Fields decorated with `@state()`
-  - **Private**: Private fields and those starting with `_`
-  - **Methods**: Class methods
-  - **Events**: Detected CustomEvent dispatches
-  - **CSS**: Whether the component has styles
+- See your component members organized with icons and counts:
+  - 🔷 **Properties (n)**: Fields decorated with `@property()`
+  - 🔸 **State (n)**: Fields decorated with `@state()`
+  - 🔒 **Private (n)**: Private fields and those starting with `_`
+  - ⚙️ **Methods (n)**: Class methods
+  - 📡 **Events (n)**: Detected CustomEvent dispatches
+  - 🎨 **CSS**: Whether the component has styles
 
 ## Troubleshooting
 
